@@ -16,7 +16,7 @@
 - Push all code to remote origin
 - Play with routes and route extensions ex. /hello, / , hello/2, /xyz
 - Order of the routes matter a lot
-- Install Postman app and make a workspace/collectio > test API call
+- Install Postman app and make a workspace/collection > test API call
 - Write logic to handle GET, POST, PATCH, DELETE API Calls and test them on Postman
 - Explore routing and use of ?, + , (), \* in the routes
 - Use of regex in routes /a/ , /.\*fly$/
@@ -45,33 +45,33 @@
 
 - JS object vs JSON (difference)
 - Add the express.json middleware to your app
-- Make your signup API dynamic to recive data from the end user
-- User.findOne with duplucate email ids, which object returned
+- Make your signup API dynamic to receive data from the end user
+- User.findOne with duplicate email ids, which object returned
 - API- Get user by email
 - API - Feed API - GET /feed - get all the users from the database
 - API - Get user by ID
 - Create a delete user API
 - Difference between PATCH and PUT
 - API - Update a user
-- Explore the Mongoose Documention for Model methods
+- Explore the Mongoose Documentation for Model methods
 - What are options in a Model.findOneAndUpdate method, explore more about it
 - API - Update the user with email ID
 
-- Explore schematype options from the documention
+- Explore schema type options from the documentation
 - add required, unique, lowercase, min, minLength, trim
 - Add default
 - Create a custom validate function for gender
-- Improve the DB schema - PUT all appropiate validations on each field in Schema
+- Improve the DB schema - PUT all appropriate validations on each field in Schema
 - Add timestamps to the userSchema
 - Add API level validation on Patch request & Signup post api
 - DATA Sanitizing - Add API validation for each field
 - Install validator
-- Explore validator library funcation and Use vlidator funcs for password, email, photoURL
+- Explore validator library function and Use vlidator funcs for password, email, photoURL
 - NEVER TRUST req.body
 
 - Validate data in Signup API
 - Install bcrypt package
-- Create PasswordHash using bcrypt.hash & save the user is excrupted password
+- Create PasswordHash using bcrypt.hash & save the user is encrypted password
 - Create login API
 - Compare passwords and throw errors if email or password is invalid
 
@@ -89,7 +89,7 @@
 
 - Explore tinder APIs
 - Create a list all API you can think of in Dev Tinder
-- Group multiple routes under repective routers
+- Group multiple routes under respective routers
 - Read documentation for express.Router
 - Create routes folder for managing auth,profile, request routers
 - create authRouter, profileRouter, requestRouter
@@ -99,7 +99,7 @@
 - Create PATCH /profile/password API => forgot password API
 - Make you validate all data in every POST, PATCH apis
 
-- Create Connnection Request Schema
+- Create Connection Request Schema
 - Send Connection Request API
 - Proper validation of Data
 - Think about ALL corner cases
@@ -108,7 +108,7 @@
 - Read more about indexes in MongoDB
 - Why do we need index in DB?
 - What is the advantages and disadvantage of creating?
-- Read this arcticle about compond indexes - https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/
+- Read this article about compound indexes - https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/
 - ALWAYS THINK ABOUT CORNER CASES
 
 - Write code with proper validations for POST /request/review/:status/:requestId
@@ -118,7 +118,7 @@
 - Create GET GET /user/connections
 
 - Logic for GET /feed API
-- Explore the $nin , $and, $ne and other query operatorators
+- Explore the $nin , $and, $ne and other query operators
 - Pagination
 
 NOTES:

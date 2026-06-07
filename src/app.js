@@ -5,10 +5,12 @@ const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
+const cors = require("cors");
 
 const app = express();
 
-app.use(express.json());
+app.use(cors());
+app.use(express.json()); //middleware
 app.use(cookieParser()); //middleware
 
 app.use("/", authRouter);
@@ -48,7 +50,7 @@ app.patch("/user/:userId", async (req, res) => {
     const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
 
     const isUpdateAllowed = Object.keys(data).every((k) =>
-      ALLOWED_UPDATES.includes(k)
+      ALLOWED_UPDATES.includes(k),
     );
 
     if (!isUpdateAllowed) {
