@@ -23,6 +23,71 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.get("/user", async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("Error fetching user" + err.message);
+  }
+});
+
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (users.length === 0) {
+      return res.status(404).send("No users found");
+    }
+    res.send(users);
+  } catch (err) {
+    res.status(400).send("Error fetching users" + err.message);
+  }
+});
+
+app.delete("/user", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.body.userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send("User deleted successfully");
+  } catch (err) {
+    res.status(400).send("Error deleting user" + err.message);
+  }
+});
+
+app.patch("/user/:userId", async (req, res) => {
+  try {
+    const allowedUpdates = ["age", "gender", "about", "photoUrl", "skills"];
+
+    const isUpdateAllowed = Object.keys(req.body).every((update) =>
+      allowedUpdates.includes(update),
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Invalid updates!");
+    }
+    if (req.body.skills.length > 10) {
+      throw new Error("Maximum 10 skills are allowed");
+    }
+
+    const user = await User.findByIdAndUpdate(
+      { _id: req.params.userId },
+      req.body,
+      { new: true, runValidators: true },
+    );
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send("User updated successfully");
+  } catch (err) {
+    res.status(400).send("Error updating user : " + err.message);
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connection established");
