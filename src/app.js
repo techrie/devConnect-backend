@@ -19,7 +19,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("User added successfully");
   } catch (err) {
-    res.status(400).send("Error creating user" + err.message);
+    res.status(400).send("Error creating user " + err.message);
   }
 });
 
@@ -70,12 +70,12 @@ app.patch("/user/:userId", async (req, res) => {
     if (!isUpdateAllowed) {
       throw new Error("Invalid updates!");
     }
-    if (req.body.skills.length > 10) {
-      throw new Error("Maximum 10 skills are allowed");
-    }
+    // if (req.body?.skills?.length > 10) {
+    //   throw new Error("Maximum 10 skills are allowed");
+    // }
 
     const user = await User.findByIdAndUpdate(
-      { _id: req.params.userId },
+      { _id: req.params?.userId },
       req.body,
       { new: true, runValidators: true },
     );

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,11 +23,24 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid email format " + value);
+        }
+      },
     },
     password: {
       type: String,
       required: true,
       maxLength: 15,
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error(
+            "Password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and symbols" +
+              value,
+          );
+        }
+      },
     },
     age: {
       type: Number,
@@ -51,10 +65,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://hostalitecloud.com/crb/wp-content/uploads/2025/10/dummy-user-male.jpg",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid URL format " + value);
+        }
+      },
     },
     skills: {
       type: [String],
       maxLength: 10,
+      validate(value) {
+        if (value.length > 10) {
+          throw new Error("Maximum 10 skills are allowed");
+        }
+      },
     },
   },
   {
