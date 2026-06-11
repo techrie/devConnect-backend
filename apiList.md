@@ -8,7 +8,7 @@
 
 ##ProfileRouter
 
-- GET /profile
+- GET /profile/view
 - POST /profile/edit
 - POST /profile/forgotpassword
 
@@ -23,6 +23,6 @@
 
 - GET /user/connections
 - GET /user/requests
-- GET /user/feed - Gets the profiles of her users on platform
+- GET /user/feed - Gets the profiles of other users on platform
 
-Status - ignore, interested, accepted, rejected
+Status - ignored, interested, accepted, rejected

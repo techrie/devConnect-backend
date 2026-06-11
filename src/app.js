@@ -1,11 +1,11 @@
 const express = require("express");
 const connectDB = require("./config/database");
-const User = require("./models/user");
-const { validateSignupData } = require("./utils/validation");
+const User = require("./models/userModel");
+
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const { userAuth } = require("./middlewares/auth");
+const { userAuth } = require("./middlewares/authMiddleware");
 require("dotenv").config();
 
 const app = express();
@@ -13,71 +13,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.post("/signup", async (req, res) => {
-  try {
-    //Validation of data - use helper function
-    validateSignupData(req);
+const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
-    const { firstName, lastName, email, password } = req.body;
-    //Encrypt the password - bcrypt
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      firstName,
-      lastName,
-      email,
-      password: passwordHash,
-    });
-    await user.save();
-    res.send("User added successfully");
-  } catch (err) {
-    res.status(400).send("Error :  " + err.message);
-  }
-});
-
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    // console.log(user);
-    if (!user) {
-      return res.status(404).send("Invalid credentials");
-    }
-
-    //instead of bcrypt.compare, use the validatePassword method from the user model
-    const isPasswordValid = await user.validatePassword(password);
-
-    if (!isPasswordValid) {
-      return res.status(401).send("Invalid credentials");
-    }
-
-    //create a jwt token
-
-    //instead of jwt.sign, use the getJWT method from the user model
-    const token = await user.getJWT();
-
-    //Add the token to cookie ans send the response back to the user
-    res.cookie("token", token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 1 * 3600000),
-    });
-    res.send("Login successful");
-  } catch (err) {
-    res.status(400).send("Error :  " + err.message);
-  }
-});
-
-app.get("/profile", userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-
-    res.send(user);
-  } catch (err) {
-    res.status(400).send("Error fetching profile" + err.message);
-  }
-});
+app.use("/", authRoutes);
+app.use("/profile", profileRoutes);
 
 app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {
@@ -89,9 +29,16 @@ app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   }
 });
 
-app.post("/logout", userAuth, (req, res) => {
-  res.clearCookie("token");
-  res.send("Logged out successfully");
+app.get("/feed", userAuth, async (req, res) => {
+  try {
+    const users = await User.find({});
+    if (users.length === 0) {
+      return res.status(404).send("No users found");
+    }
+    res.send(users);
+  } catch (err) {
+    res.status(400).send("Error fetching users" + err.message);
+  }
 });
 
 connectDB()
