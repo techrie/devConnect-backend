@@ -3,10 +3,15 @@ const connectDB = require("./config/database");
 const User = require("./models/user");
 const { validateSignupData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
+require("dotenv").config();
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
@@ -36,86 +41,57 @@ app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    console.log(user);
+    // console.log(user);
     if (!user) {
       return res.status(404).send("Invalid credentials");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    //instead of bcrypt.compare, use the validatePassword method from the user model
+    const isPasswordValid = await user.validatePassword(password);
 
     if (!isPasswordValid) {
       return res.status(401).send("Invalid credentials");
     }
 
+    //create a jwt token
+
+    //instead of jwt.sign, use the getJWT method from the user model
+    const token = await user.getJWT();
+
+    //Add the token to cookie ans send the response back to the user
+    res.cookie("token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 1 * 3600000),
+    });
     res.send("Login successful");
   } catch (err) {
     res.status(400).send("Error :  " + err.message);
   }
 });
 
-app.get("/user", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
+    const user = req.user;
+
     res.send(user);
   } catch (err) {
-    res.status(400).send("Error fetching user" + err.message);
+    res.status(400).send("Error fetching profile" + err.message);
   }
 });
 
-app.get("/feed", async (req, res) => {
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {
-    const users = await User.find({});
-    if (users.length === 0) {
-      return res.status(404).send("No users found");
-    }
-    res.send(users);
+    const user = req.user;
+    // Logic to send connection request
+    res.send(user.firstName + " " + "sent a connection request");
   } catch (err) {
-    res.status(400).send("Error fetching users" + err.message);
+    res.status(400).send("Error sending connection request" + err.message);
   }
 });
 
-app.delete("/user", async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.body.userId);
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    res.send("User deleted successfully");
-  } catch (err) {
-    res.status(400).send("Error deleting user" + err.message);
-  }
-});
-
-app.patch("/user/:userId", async (req, res) => {
-  try {
-    const allowedUpdates = ["age", "gender", "about", "photoUrl", "skills"];
-
-    const isUpdateAllowed = Object.keys(req.body).every((update) =>
-      allowedUpdates.includes(update),
-    );
-
-    if (!isUpdateAllowed) {
-      throw new Error("Invalid updates!");
-    }
-    // if (req.body?.skills?.length > 10) {
-    //   throw new Error("Maximum 10 skills are allowed");
-    // }
-
-    const user = await User.findByIdAndUpdate(
-      { _id: req.params?.userId },
-      req.body,
-      { new: true, runValidators: true },
-    );
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    res.send("User updated successfully");
-  } catch (err) {
-    res.status(400).send("Error updating user : " + err.message);
-  }
+app.post("/logout", userAuth, (req, res) => {
+  res.clearCookie("token");
+  res.send("Logged out successfully");
 });
 
 connectDB()
@@ -130,6 +106,71 @@ connectDB()
   });
 
 // /*
+
+// app.get("/user", async (req, res) => {
+//   try {
+//     const user = await User.findOne({ email: req.body.email });
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+//     res.send(user);
+//   } catch (err) {
+//     res.status(400).send("Error fetching user" + err.message);
+//   }
+// });
+
+// app.get("/feed", async (req, res) => {
+//   try {
+//     const users = await User.find({});
+//     if (users.length === 0) {
+//       return res.status(404).send("No users found");
+//     }
+//     res.send(users);
+//   } catch (err) {
+//     res.status(400).send("Error fetching users" + err.message);
+//   }
+// });
+
+// app.delete("/user", async (req, res) => {
+//   try {
+//     const user = await User.findByIdAndDelete(req.body.userId);
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+//     res.send("User deleted successfully");
+//   } catch (err) {
+//     res.status(400).send("Error deleting user" + err.message);
+//   }
+// });
+
+// app.patch("/user/:userId", async (req, res) => {
+//   try {
+//     const allowedUpdates = ["age", "gender", "about", "photoUrl", "skills"];
+
+//     const isUpdateAllowed = Object.keys(req.body).every((update) =>
+//       allowedUpdates.includes(update),
+//     );
+
+//     if (!isUpdateAllowed) {
+//       throw new Error("Invalid updates!");
+//     }
+//     // if (req.body?.skills?.length > 10) {
+//     //   throw new Error("Maximum 10 skills are allowed");
+//     // }
+
+//     const user = await User.findByIdAndUpdate(
+//       { _id: req.params?.userId },
+//       req.body,
+//       { new: true, runValidators: true },
+//     );
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+//     res.send("User updated successfully");
+//   } catch (err) {
+//     res.status(400).send("Error updating user : " + err.message);
+//   }
+// });
 
 // const { adminAuth, userAuth } = require("./middleware/auth");
 // //Order of routes is important
