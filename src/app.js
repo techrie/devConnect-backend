@@ -15,9 +15,11 @@ app.use(cookieParser());
 
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const requestRoutes = require("./routes/requestRouter");
 
 app.use("/", authRoutes);
 app.use("/profile", profileRoutes);
+app.use("/request", requestRoutes);
 
 app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {
@@ -29,7 +31,7 @@ app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   }
 });
 
-app.get("/feed", userAuth, async (req, res) => {
+app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
     if (users.length === 0) {

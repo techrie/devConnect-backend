@@ -8,9 +8,9 @@
 
 ##ProfileRouter
 
-- GET /profile/view
-- POST /profile/edit
-- POST /profile/forgotpassword
+- GET /profile/viewProfile
+- POST /profile/editProfile
+- POST /profile/changePassword
 
 ##ConnectionRequestRouter
 
