@@ -16,10 +16,12 @@ app.use(cookieParser());
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const requestRoutes = require("./routes/requestRouter");
+const userRoutes = require("./routes/userRoutes");
 
 app.use("/", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/request", requestRoutes);
+app.use("/user", userRoutes);
 
 app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   try {

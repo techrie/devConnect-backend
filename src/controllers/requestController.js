@@ -97,8 +97,10 @@ const reviewRequestReceived = async (req, res) => {
     connectionRequest.status = status;
     const data = await connectionRequest.save();
 
+    //how to see who sent the request
+
     res.json({
-      message: `Connection request ${status} successfully`,
+      message: `${loggedInUser.firstName} ${status} the connection request.`,
       data,
     });
   } catch (err) {
