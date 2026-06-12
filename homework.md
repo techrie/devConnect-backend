@@ -77,7 +77,7 @@
 
 - install cookie-parser
 - just send a dummy cookie to user
-- create GET /profile APi and check if you get the cookie back
+- create GET /profile/viewProfile APi and check if you get the cookie back
 - install jsonwebtoken
 - IN login API, after email and password validation, create e JWT token and send it to user in cookies
 - read the cookies inside your profile API and find the logged in user
@@ -85,7 +85,7 @@
 - Add the userAuth middle ware in profile API and a new sendConnectionRequest API
 - Set the expiry of JWT token and cookies to 7 days
 - Create userSchema method to getJWT()
-- Create UserSchema method to comparepassword(passwordInputByUser)
+- Create UserSchema method to comparePassword(passwordInputByUser)
 
 - Explore tinder APIs
 - Create a list all API you can think of in Dev Tinder
@@ -95,8 +95,8 @@
 - create authRouter, profileRouter, requestRouter
 - Import these routers in app.js
 - Create POST /logout API
-- Create PATCH /profile/edit
-- Create PATCH /profile/password API => forgot password API
+- Create PATCH /profile/editProfile
+- Create PATCH /profile/changePassword API => forgot password API
 - Make you validate all data in every POST, PATCH apis
 
 - Create Connection Request Schema
@@ -118,7 +118,7 @@
 - Create GET GET /user/connections
 
 - Logic for GET /feed API
-- Explore the $nin , $and, $ne and other query operators
+- Explore the $nin , $and, $ne and other query operators (Logical queries, comparison queries)
 - Pagination
 
 NOTES:

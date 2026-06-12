@@ -22,10 +22,6 @@ const sendOrIgnoreConnectionRequest = async (req, res) => {
       throw new Error("User not found");
     }
 
-    if (!toUserId) {
-      throw new Error("Invalid toUserId");
-    }
-
     //handled at schema level using pre-save middleware
     // if (fromUserId.toString() === toUserId.toString()) {
     //   throw new Error("Cannot send request to yourself");
@@ -50,6 +46,7 @@ const sendOrIgnoreConnectionRequest = async (req, res) => {
       status,
     });
 
+    //pre save middleware in the model will be called here just before saving to the database
     const data = await connectionRequest.save();
 
     // Logic to send connection request
@@ -62,4 +59,51 @@ const sendOrIgnoreConnectionRequest = async (req, res) => {
   }
 };
 
-module.exports = { sendOrIgnoreConnectionRequest };
+const reviewRequestReceived = async (req, res) => {
+  try {
+    const allowedStatuses = ["accepted", "rejected"];
+    if (!allowedStatuses.includes(req.params.status)) {
+      throw new Error(
+        "Invalid status. Allowed statuses are: accepted, rejected",
+      );
+    }
+
+    const loggedInUser = req.user;
+    const status = req.params.status;
+    const requestId = req.params.requestId;
+
+    //check if requestId is present in the database
+    const connectionRequestExists = await ConnectionRequest.findById({
+      _id: requestId,
+    });
+    if (!connectionRequestExists) {
+      throw new Error("Connection request not found");
+    }
+
+    //check if logged in user is the recipient of the connection request , status should be interested
+
+    // Logic to review the connection request
+
+    const connectionRequest = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUserId: loggedInUser._id,
+      status: "interested",
+    });
+    if (!connectionRequest) {
+      throw new Error("Connection request not found");
+    }
+
+    // Update the connection request status
+    connectionRequest.status = status;
+    const data = await connectionRequest.save();
+
+    res.json({
+      message: `Connection request ${status} successfully`,
+      data,
+    });
+  } catch (err) {
+    res.status(400).send("Error reviewing connection request : " + err.message);
+  }
+};
+
+module.exports = { sendOrIgnoreConnectionRequest, reviewRequestReceived };
