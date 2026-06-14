@@ -1,4 +1,5 @@
 const ConnectionRequest = require("../models/connectionRequestModel");
+
 const USER_SAFE_DATA = "firstName lastName age gender about skills photoUrl";
 
 //Get received connection requests for the logged in user

@@ -6,7 +6,7 @@ const viewProfile = async (req, res) => {
   try {
     const user = req.user;
 
-    res.json({ user });
+    res.json({ data: user });
   } catch (err) {
     res.status(400).send("Error fetching profile" + err.message);
   }
