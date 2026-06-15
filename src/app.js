@@ -16,30 +16,8 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
-    // methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    // allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
-// app.options("*", cors());
-
-// Source - https://stackoverflow.com/a/57412043
-// Posted by Sohail Ahmad, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-06-13, License - CC BY-SA 4.0
-
-// app.use(function (req, res, next) {
-//   //Enabling CORS
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE",
-//   );
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization",
-//   );
-//   next();
-// });
 
 // middleware
 app.use(express.json());
