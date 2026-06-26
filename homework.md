@@ -132,3 +132,7 @@ NOTES:
 /feed?page=4&limit=10 => 21-30 => .skip(20) & .limit(10)
 
 skip = (page-1)\*limit;
+
+git remote set-url origin https://github.com/techrie/devConnect-backend.git
+
+when repo name is changed in github, do the above
